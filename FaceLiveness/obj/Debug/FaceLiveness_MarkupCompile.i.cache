@@ -1,7 +1,7 @@
 ﻿FaceLiveness
 
 
-exe
+winexe
 C#
 .cs
 C:\Users\muham\source\repos\FaceLiveness\FaceLiveness\obj\Debug\
@@ -16,5 +16,5 @@ C:\Users\muham\source\repos\FaceLiveness\FaceLiveness\App.xaml
 391792177249
 MainWindow.xaml;
 
-False
+True
 

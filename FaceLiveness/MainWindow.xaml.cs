@@ -68,8 +68,11 @@ namespace FaceLiveness
             ovalWidth = 0;
             ovalHeight = 0;
 
+            Uri model = new Uri("pack://application:,,,/haarcascade_frontalface_alt.xml");
+
             _cascadeClassifier = new OpenCvSharp.CascadeClassifier(
                 System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "haarcascade_frontalface_alt.xml")
+                //model.AbsolutePath
                 );
         }
 
@@ -91,6 +94,7 @@ namespace FaceLiveness
 
         private void BtnStart_Click(object sender, RoutedEventArgs e)
         {
+            StopCamera();
             StartCamera();
         }
 
@@ -252,13 +256,16 @@ namespace FaceLiveness
                 {
                     // convert bitmap to OpenCV Mat
                     var mat = bitmap.ToMat();
+
+                    Cv2.Resize(mat, mat, new Size(1280, 720));
+
                     var matCopy = mat.Clone();
 
                     if (!isFirstFrame)
                     {
                         isFirstFrame = true;
-                        ovalWidth = (int)(mat.Width / 2.4);
-                        ovalHeight = (int)(mat.Height);
+                        ovalWidth = (int)(mat.Width / 2.8);
+                        ovalHeight = (int)(mat.Height / 1.2);
                     }
 
                     // flip frame horizontally
@@ -273,7 +280,7 @@ namespace FaceLiveness
                     // detect faces
                     var faces = _cascadeClassifier.DetectMultiScale(
                         image: grayScale,
-                        scaleFactor: 1.1,
+                        scaleFactor: 1.3,
                         minNeighbors: 3,
                         flags: HaarDetectionTypes.DoRoughSearch | HaarDetectionTypes.ScaleImage,
                         minSize: new OpenCvSharp.Size(30, 30)
@@ -318,6 +325,7 @@ namespace FaceLiveness
                         numberOfGoodFramesCaptured = 0;
                     }
 
+
                     if (numberOfGoodFramesCaptured == numberOfGoodFramesRequired)
                     {
                         // write a post request to the server
@@ -331,17 +339,39 @@ namespace FaceLiveness
                             // Resize to 720x960
                             Cv2.Resize(image, image, new Size(720, 960));
 
-                            //Cv2.ImShow("Hello", image);
-                            //Cv2.WaitKey(0);
+                            //Cv2.ImWrite("test.jpg", image);
+
 
                             Console.WriteLine("Uploading image");
                             Response response = await SendImageToServerWithRestSharpAsync(image, "https://face-api.truid.ai/check-face-liveness");
+
+                            Cv2.ImShow("Hello", image);
+                            Cv2.WaitKey(1000);
+                            Cv2.DestroyAllWindows();
 
                             Console.WriteLine("Response received: " + response.Status + " " + response.Result.Status);
 
                             //Reset();
 
-                            // move to results page with data sent
+                            StopCamera();
+
+                            Dispatcher.Invoke(() =>
+                            {
+                                messageLabel.Content = "Press start to check again";
+                            });
+
+                            // show a dialog box with the response
+                            Dispatcher.Invoke(() =>
+                            {
+                                if (response.Result.Status != "error")
+                                {
+                                    MessageBox.Show($"Face liveness check successful. {response.Result.Confidence}", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                                }
+                                else
+                                {
+                                    MessageBox.Show($"Face liveness check failed. {response.Result.Confidence}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                                }
+                            });
 
                         });
                         hasImageUploaded = true;

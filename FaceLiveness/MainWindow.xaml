@@ -47,6 +47,7 @@
                     Click="BtnStart_Click"
                     Content="Start" />
 
+                <!--
                 <Button Width="67"
                     Margin="5,0,0,0"
                     Height="21"
@@ -54,7 +55,9 @@
                     VerticalAlignment="Bottom"
                     Click="BtnStop_Click"
                     Content="Stop" />
-            </StackPanel>
+                -->
+                
+                </StackPanel>
         </StackPanel>
     </Grid>
 </Window>
