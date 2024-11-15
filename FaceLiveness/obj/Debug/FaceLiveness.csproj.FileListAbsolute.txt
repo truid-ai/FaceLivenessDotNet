@@ -41,3 +41,4 @@ C:\Users\muham\source\repos\FaceLiveness\FaceLiveness\bin\Debug\RestSharp.dll
 C:\Users\muham\source\repos\FaceLiveness\FaceLiveness\bin\Debug\System.Text.Encodings.Web.dll
 C:\Users\muham\source\repos\FaceLiveness\FaceLiveness\bin\Debug\System.Text.Json.dll
 C:\Users\muham\source\repos\FaceLiveness\FaceLiveness\bin\Debug\System.ValueTuple.dll
+C:\Users\muham\source\repos\FaceLiveness\FaceLiveness\bin\Debug\Newtonsoft.Json.dll

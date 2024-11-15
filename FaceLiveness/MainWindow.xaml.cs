@@ -17,6 +17,9 @@ using Size = OpenCvSharp.Size;
 using System.Windows.Controls;
 using RestSharp;
 using System.Threading.Tasks;
+using System.Collections.Generic;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace FaceLiveness
 {
@@ -48,8 +51,9 @@ namespace FaceLiveness
         private int ovalHeight;
         private string message = "";
         private bool isFaceOkay = false;
-        private bool hasOvalGrown = false;
         private bool hasImageUploaded = false;
+        private int numberOfGoodFramesCaptured = 0;
+        private const int numberOfGoodFramesRequired = 30;
 
         #endregion
 
@@ -67,6 +71,17 @@ namespace FaceLiveness
             _cascadeClassifier = new OpenCvSharp.CascadeClassifier(
                 System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "haarcascade_frontalface_alt.xml")
                 );
+        }
+
+        private void Reset()
+        {
+            isFirstFrame = false;
+            ovalWidth = 0;
+            ovalHeight = 0;
+            message = "";
+            isFaceOkay = false;
+            hasImageUploaded = false;
+            numberOfGoodFramesCaptured = 0;
         }
 
         private void MainWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
@@ -149,7 +164,19 @@ namespace FaceLiveness
             return frame;
         }
 
-        public async Task SendImageToServerWithRestSharpAsync(Mat image, string url)
+        public class Response
+        {
+            public int Status { get; set; }
+            public Result Result { get; set; }
+        }
+
+        public class Result
+        {
+            public string Status { get; set; }
+            public double Confidence { get; set; }
+        }
+
+        public async Task<Response> SendImageToServerWithRestSharpAsync(Mat image, string url)
         {
             // Step 1: Convert Mat to byte array in JPEG format
             Cv2.ImEncode(".jpg", image, out byte[] imageData);
@@ -168,11 +195,13 @@ namespace FaceLiveness
             {
                 // Handle success
                 System.Console.WriteLine("Response received: " + response.Content);
+                return JsonConvert.DeserializeObject<Response>(response.Content);
             }
             else
             {
                 // Handle error
                 System.Console.WriteLine("Error: " + response.ErrorMessage);
+                return null;
             }
         }
 
@@ -228,12 +257,13 @@ namespace FaceLiveness
                     if (!isFirstFrame)
                     {
                         isFirstFrame = true;
-                        ovalWidth = mat.Width / 4;
-                        ovalHeight = (int)(mat.Height / 1.5);
+                        ovalWidth = (int)(mat.Width / 2.4);
+                        ovalHeight = (int)(mat.Height);
                     }
 
                     // flip frame horizontally
                     Cv2.Flip(mat, mat, FlipMode.Y);
+                    Cv2.Flip(matCopy, matCopy, FlipMode.Y);
 
                     var grayScale = new OpenCvSharp.Mat();
 
@@ -264,7 +294,7 @@ namespace FaceLiveness
                         message = "Please move your face to the oval";
                     }
                     // if face is too small
-                    else if (faces[0].Width < ovalWidth / 2 || faces[0].Height < ovalHeight / 2)
+                    else if (faces[0].Width < ovalWidth / 1.2 || faces[0].Height < ovalHeight / 2)
                     {
                         message = "Please move closer";
                     }
@@ -275,22 +305,20 @@ namespace FaceLiveness
                     }
                     else
                     {
-                        if (hasOvalGrown)
-                        {
-                            isFaceOkay = true;
-                            message = "Hold Still";
-                        }
-                        else
-                        {
-                            Console.WriteLine();
-                            isFaceOkay = false;
-                            ovalWidth += 50;
-                            ovalHeight += 50;
-                            hasOvalGrown = true;
-                        }
+                        isFaceOkay = true;
+                        message = "Hold Still";
                     }
 
+                    // Frames are captured only when the face is okay
                     if (isFaceOkay)
+                    {
+                        numberOfGoodFramesCaptured++;
+                    } else
+                    {
+                        numberOfGoodFramesCaptured = 0;
+                    }
+
+                    if (numberOfGoodFramesCaptured == numberOfGoodFramesRequired)
                     {
                         // write a post request to the server
                         // if the response is okay, then show the success message
@@ -303,15 +331,26 @@ namespace FaceLiveness
                             // Resize to 720x960
                             Cv2.Resize(image, image, new Size(720, 960));
 
-                            Cv2.ImShow("Hello", image);
-                            Cv2.WaitKey(0);
+                            //Cv2.ImShow("Hello", image);
+                            //Cv2.WaitKey(0);
 
                             Console.WriteLine("Uploading image");
-                            await SendImageToServerWithRestSharpAsync(matCopy, "https://face-api.truid.ai/check-face-liveness/?platform=desktop");
+                            Response response = await SendImageToServerWithRestSharpAsync(image, "https://face-api.truid.ai/check-face-liveness");
+
+                            Console.WriteLine("Response received: " + response.Status + " " + response.Result.Status);
+
+                            //Reset();
+
+                            // move to results page with data sent
+
                         });
                         hasImageUploaded = true;
-
                     }
+
+                    Dispatcher.Invoke(() =>
+                    {
+                        messageLabel.Content = message;
+                    });
 
                     // draw rectangles around detected faces
                     foreach (var face in faces)
@@ -320,8 +359,6 @@ namespace FaceLiveness
                     }
 
                     mat = ApplyOvalOverlay(mat, ovalWidth, ovalHeight);
-
-                    AddTextWithRoundedRectangle(mat, message);
 
                     bi = ToBitmapImage(mat.ToBitmap());
                 }
@@ -369,13 +406,7 @@ namespace FaceLiveness
 
         private void StopCamera()
         {
-            isFirstFrame = false;
-            ovalWidth = 0;
-            ovalHeight = 0;
-            message = "";
-            isFaceOkay = false;
-            hasOvalGrown = false;
-            hasImageUploaded = false;
+            Reset();
 
             if (_videoSource != null && _videoSource.IsRunning)
             {

@@ -9,37 +9,52 @@
     <Grid>
 
         <Image x:Name="videoPlayer" Margin="10,0,10,70" />
-        <ComboBox x:Name="comboBox"
-                    Width="167"
-                    Height="21"
-                    Margin="10,0,0,25"
+        <StackPanel Orientation="Vertical" VerticalAlignment="Bottom">
+            
+            <!-- Centered Label for displaying messages under the Image -->
+            <Label x:Name="messageLabel"
+                   HorizontalAlignment="Center"
+                   VerticalAlignment="Bottom"
+                   Content="Please place your face inside the ovals" 
+                   FontSize="24"
+                   Foreground="DarkRed" />
+
+            <StackPanel Orientation="Horizontal" Margin="0,0,0,10" HorizontalAlignment="Center" >
+
+                <Label
+                    Height="24"
+                    Margin="5,0,0,0"
                     HorizontalAlignment="Left"
                     VerticalAlignment="Bottom"
-                    DisplayMemberPath="Name"
-                    ItemsSource="{Binding VideoDevices}"
-                    SelectedItem="{Binding CurrentDevice}" />
-        <Label Width="167"
-               Height="24"
-               Margin="10,0,0,46"
-               HorizontalAlignment="Left"
-               VerticalAlignment="Bottom"
-               Content="Select video source" />
-        
-        <Button Width="67"
-                Height="21"
-                Margin="213,0,0,25"
-                HorizontalAlignment="Left"
-                VerticalAlignment="Bottom"
-                Click="BtnStart_Click"
-                Content="Start" />
-        
-        <Button Width="67"
-                Height="21"
-                Margin="296,0,0,25"
-                HorizontalAlignment="Left"
-                VerticalAlignment="Bottom"
-                Click="BtnStop_Click"
-                Content="Stop" />
+                    Content="Select video source" />
 
+                <ComboBox x:Name="comboBox"
+                    Margin="5,0,0,0"
+                      Width="167"
+                      Height="21"
+                      HorizontalAlignment="Left"
+                      VerticalAlignment="Bottom"
+                      DisplayMemberPath="Name"
+                      ItemsSource="{Binding VideoDevices}"
+                      SelectedItem="{Binding CurrentDevice}" />
+
+
+                <Button Width="67"
+                    Margin="5,0,0,0"
+                    Height="21"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Bottom"
+                    Click="BtnStart_Click"
+                    Content="Start" />
+
+                <Button Width="67"
+                    Margin="5,0,0,0"
+                    Height="21"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Bottom"
+                    Click="BtnStop_Click"
+                    Content="Stop" />
+            </StackPanel>
+        </StackPanel>
     </Grid>
 </Window>
