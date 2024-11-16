@@ -16,9 +16,6 @@
     {
       "AbsoluteMoniker": "D:0:0:{34DA5590-D4F5-4EA2-945F-83F44803ED69}|FaceLiveness\\FaceLiveness.csproj|C:\\Users\\muham\\source\\repos\\FaceLiveness\\faceliveness\\app.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
       "RelativeMoniker": "D:0:0:{34DA5590-D4F5-4EA2-945F-83F44803ED69}|FaceLiveness\\FaceLiveness.csproj|solutionrelative:faceliveness\\app.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{34DA5590-D4F5-4EA2-945F-83F44803ED69}|FaceLiveness\\FaceLiveness.csproj|c:\\users\\muham\\source\\repos\\faceliveness\\faceliveness\\||{B270807C-D8C6-49EB-8EBE-8E8D566637A1}|5e9a8ac2-4f34-4521-858f-4c248ba31532"
     }
   ],
   "DocumentGroupContainers": [
@@ -39,8 +36,7 @@
               "ToolTip": "C:\\Users\\muham\\source\\repos\\FaceLiveness\\FaceLiveness\\FaceLiveness.csproj",
               "RelativeToolTip": "FaceLiveness\\FaceLiveness.csproj",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
-              "WhenOpened": "2024-11-16T11:03:49.719Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-11-16T11:03:49.719Z"
             },
             {
               "$type": "Document",
@@ -74,7 +70,7 @@
               "RelativeDocumentMoniker": "FaceLiveness\\MainWindow.xaml.cs",
               "ToolTip": "C:\\Users\\muham\\source\\repos\\FaceLiveness\\FaceLiveness\\MainWindow.xaml.cs",
               "RelativeToolTip": "FaceLiveness\\MainWindow.xaml.cs",
-              "ViewState": "AgIAAG4BAAAAAAAAAAAwwHgBAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAIMBAAAAAAAAAAAQwJABAAAhAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-11-12T18:06:20.641Z",
               "EditorCaption": ""

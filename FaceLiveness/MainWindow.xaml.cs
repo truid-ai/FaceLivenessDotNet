@@ -392,13 +392,23 @@ namespace FaceLiveness
                             // show a dialog box with the response
                             Dispatcher.Invoke(() =>
                             {
-                                if (response.Result.Status != "error" && response.icaoStatus != "error")
+                                if (response.Result.Status == "error" && response.icaoStatus == "error")
                                 {
-                                    MessageBox.Show($"Face liveness check successful. {response.Result.Confidence}", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                                    livenessLabel.Text = "Face liveness check failed";
+                                    instructionPopup.IsOpen = true;
+                                }
+                                else if (response.icaoStatus == "error")
+                                {
+                                    livenessLabel.Text = "Face liveness check passed";
+                                    instructionPopup.IsOpen = true;
+                                }
+                                else if (response.Result.Status == "error")
+                                {
+                                    MessageBox.Show($"ICAO passed. Face liveness check failed.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                                 }
                                 else
                                 {
-                                    instructionPopup.IsOpen = true;
+                                    MessageBox.Show($"Face liveness check successful.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
                                 }
                             });
 
