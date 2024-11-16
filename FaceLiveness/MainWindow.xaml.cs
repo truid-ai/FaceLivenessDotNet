@@ -171,13 +171,27 @@ namespace FaceLiveness
         public class Response
         {
             public int Status { get; set; }
+            public string icaoStatus { get; set; }
             public Result Result { get; set; }
+            public FaceQualityChecks FaceQualityChecks { get; set; }
         }
 
         public class Result
         {
             public string Status { get; set; }
             public double Confidence { get; set; }
+        }
+
+        public class FaceQualityChecks
+        {
+            public string Face_Detected { get; set; }
+            public string Face_Exposure { get; set; }
+            public string Bg_Glare { get; set; }
+            public string Covered_Face { get; set; }
+            public string Sun_Glasses { get; set; }
+            public string Expression { get; set; }
+            public string Eyes_Closed { get; set; }
+            public string Pupil { get; set; }
         }
 
         public async Task<Response> SendImageToServerWithRestSharpAsync(Mat image, string url)
@@ -334,6 +348,10 @@ namespace FaceLiveness
 
                         Task.Run(async () =>
                         {
+                            Dispatcher.Invoke(() =>
+                            {
+                                loadingPopup.IsOpen = true;
+                            });
                             Mat image = CropToCenterAspectRatio(matCopy);
 
                             // Resize to 720x960
@@ -345,13 +363,10 @@ namespace FaceLiveness
                             Console.WriteLine("Uploading image");
                             Response response = await SendImageToServerWithRestSharpAsync(image, "https://face-api.truid.ai/check-face-liveness");
 
-                            Cv2.ImShow("Hello", image);
-                            Cv2.WaitKey(1000);
-                            Cv2.DestroyAllWindows();
+                            //Cv2.ImShow("Hello", image);
+                            //Cv2.WaitKey(1000);
+                            //Cv2.DestroyAllWindows();
 
-                            Console.WriteLine("Response received: " + response.Status + " " + response.Result.Status);
-
-                            //Reset();
 
                             StopCamera();
 
@@ -360,16 +375,30 @@ namespace FaceLiveness
                                 messageLabel.Content = "Press start to check again";
                             });
 
+                            Dispatcher.Invoke(() =>
+                            {
+                                loadingPopup.IsOpen = false;
+                            });
+
+                            if (response.Status == 500)
+                            {
+                                StartCamera();
+                                return;
+                            }
+
+                            Console.WriteLine("Response received: " + response.Status + " " + response.Result.Status);
+
+
                             // show a dialog box with the response
                             Dispatcher.Invoke(() =>
                             {
-                                if (response.Result.Status != "error")
+                                if (response.Result.Status != "error" && response.icaoStatus != "error")
                                 {
                                     MessageBox.Show($"Face liveness check successful. {response.Result.Confidence}", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
                                 }
                                 else
                                 {
-                                    MessageBox.Show($"Face liveness check failed. {response.Result.Confidence}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                                    instructionPopup.IsOpen = true;
                                 }
                             });
 
@@ -445,6 +474,12 @@ namespace FaceLiveness
             }
         }
 
+        // Close the popup when the user clicks the "OK" button
+        private void ClosePopup_Click(object sender, RoutedEventArgs e)
+        {
+            instructionPopup.IsOpen = false;
+        }
+
         #region INotifyPropertyChanged members
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -461,4 +496,5 @@ namespace FaceLiveness
 
         #endregion
     }
+
 }
