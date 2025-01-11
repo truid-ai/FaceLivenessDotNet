@@ -4,15 +4,15 @@
 exe
 C#
 .cs
-C:\code\FaceLivenessDotNet\FaceLiveness\obj\Debug\
+C:\code\FaceLivenessDotNet\FaceLiveness\obj\Release\
 FaceLiveness
 none
 false
-DEBUG;TRACE
+TRACE
 C:\code\FaceLivenessDotNet\FaceLiveness\App.xaml
 1219584333
 4751584485
-6-502434485
+6-1159578175
 391792177249
 MainWindow.xaml;
 

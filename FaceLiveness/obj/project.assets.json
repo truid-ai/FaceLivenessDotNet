@@ -2490,11 +2490,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\muham\\source\\repos\\FaceLiveness\\FaceLiveness\\FaceLiveness.csproj",
+      "projectUniqueName": "C:\\code\\FaceLivenessDotNet\\FaceLiveness\\FaceLiveness.csproj",
       "projectName": "FaceLiveness",
-      "projectPath": "C:\\Users\\muham\\source\\repos\\FaceLiveness\\FaceLiveness\\FaceLiveness.csproj",
+      "projectPath": "C:\\code\\FaceLivenessDotNet\\FaceLiveness\\FaceLiveness.csproj",
       "packagesPath": "C:\\Users\\muham\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\muham\\source\\repos\\FaceLiveness\\FaceLiveness\\obj\\",
+      "outputPath": "C:\\code\\FaceLivenessDotNet\\FaceLiveness\\obj\\",
       "projectStyle": "PackageReference",
       "skipContentFileWrite": true,
       "fallbackFolders": [

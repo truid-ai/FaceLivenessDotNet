@@ -24,58 +24,136 @@
             </Border>
         </Popup>
 
-        <!-- Popup overlay -->
-        <Popup x:Name="instructionPopup" IsOpen="False" StaysOpen="False" Placement="Center">
+        <Popup x:Name="instructionPopup" IsOpen="{Binding IsPopupOpen}" StaysOpen="False" Placement="Center">
             <Border Background="White" BorderBrush="Black" BorderThickness="2" CornerRadius="10" Padding="10">
                 <StackPanel Width="450" HorizontalAlignment="Center" VerticalAlignment="Center">
-                    <TextBlock Text="Liveness"
-                               TextWrapping="Wrap"
-                               FontSize="24"
-                               Foreground="Black"
-                               TextAlignment="Left" 
-                               Margin="0,0,0,10"
-                               x:Name="livenessLabel" />
+                    <TextBlock Text=""
+                       TextWrapping="Wrap"
+                       FontSize="24"
+                       Foreground="Black"
+                       TextAlignment="Center" 
+                       Margin="0,0,0,10"
+                       x:Name="livenessLabel" />
 
-                    <TextBlock Text="The captured image does not meet NADRA's quality requirements."
-                               TextWrapping="Wrap"
-                               FontSize="24"
-                               Foreground="Black"
-                               TextAlignment="Left" 
-                               Margin="0,0,0,10" />
-                    <TextBlock Text="Please ensure:"
-                               TextWrapping="Wrap"
-                               FontSize="18"
-                               Foreground="Black"
-                               TextAlignment="Left" 
-                               />
-                    <TextBlock Text="* There is no overexposure or glare in the background."
-                               TextWrapping="Wrap"
-                               FontSize="18"
-                               Foreground="Black"
-                               TextAlignment="Left" 
-                                />
-                    <TextBlock Text="* The face is clearly visible and not covered (e.g., no sunglasses or masks)."
-                               TextWrapping="Wrap"
-                               FontSize="18"
-                               Foreground="Black"
-                               TextAlignment="Left" 
-                                />
-                    <TextBlock Text="* The eyes are open and looking directly at the camera."
-                               TextWrapping="Wrap"
-                               FontSize="18"
-                               Foreground="Black"
-                               TextAlignment="Left" 
-                               Margin="0,0,0,10"
-                                />
-                    <TextBlock Text="Kindly recapture the image to meet these standards."
-                               TextWrapping="Wrap"
-                               FontSize="20"
-                               Foreground="Black"
-                               TextAlignment="Left" 
-                                />
+                    <TextBlock Text=""
+                        x:Name="icaoLabel"
+                        FontSize="18"
+                        FontWeight="Bold"
+                        Margin="0,0,0,5" />
 
-                    <Button Content="OK" Width="100" Margin="0,10,0,0" HorizontalAlignment="Center"
-                            Click="ClosePopup_Click" />
+
+                    <TextBlock Text="Face Quality Checks:"
+                       FontSize="18"
+                       FontWeight="Bold"
+                       Margin="0,0,0,5" />
+                    
+                    <TextBlock 
+                        x:Name="backgroundUniformity" 
+                        Text=""
+                        FontSize="16"
+                        Foreground="Black"
+                    />
+
+                    <TextBlock 
+                        Text=""
+                        x:Name="shadowSymmetry"
+                        FontSize="16"
+                        Margin="0,2,0,5" 
+                    />
+
+                    <TextBlock 
+                        Text=""
+                        x:Name="appLighting"
+                        FontSize="16"
+                        Margin="0,2,0,5" 
+                        />
+
+                    <TextBlock 
+                        Text=""
+                        x:Name="appExposure"
+                        FontSize="16"
+                        Margin="0,2,0,5" 
+                        />
+
+
+                    <TextBlock 
+                        Text=""
+                        x:Name="colorN"
+                        FontSize="16"
+                        Margin="0,2,0,5" 
+                        />
+
+                    <TextBlock 
+                        Text=""
+                        x:Name="expressionN"
+                        FontSize="16"
+                        Margin="0,2,0,5" 
+                        />
+
+
+                    <TextBlock 
+                        Text=""
+                        x:Name="foreignObjects"
+                        FontSize="16"
+                        Margin="0,2,0,5" 
+                        />
+
+
+                    <TextBlock 
+                        Text=""
+                        x:Name="lookingStraight"
+                        FontSize="16"
+                        Margin="0,2,0,5" 
+                        />
+
+
+                    <TextBlock 
+                        Text=""
+                        x:Name="faceAlign"
+                        FontSize="16"
+                        Margin="0,2,0,5" 
+                        />
+
+
+                    <TextBlock 
+                        Text=""
+                        x:Name="eyesOpen"
+                        FontSize="16"
+                        Margin="0,2,0,5" 
+                        />
+
+
+                    <TextBlock 
+                        Text=""
+                        x:Name="eyeVis"
+                        FontSize="16"
+                        Margin="0,2,0,5" 
+                        />
+
+
+                    <TextBlock 
+                        Text=""
+                        x:Name="faceFeatVis"
+                        FontSize="16"
+                        Margin="0,2,0,5" 
+                        />
+
+
+                    <TextBlock 
+                        Text=""
+                        x:Name="glasses"
+                        FontSize="16"
+                        Margin="0,2,0,5" 
+                        />
+
+
+                    <TextBlock 
+                        Text=""
+                        x:Name="sunGlasses"
+                        FontSize="16"
+                        Margin="0,2,0,5" 
+                        />
+
                 </StackPanel>
             </Border>
         </Popup>

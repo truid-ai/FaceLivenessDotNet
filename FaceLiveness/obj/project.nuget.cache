@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "wj+FBg1ixQ8=",
+  "dgSpecHash": "H563dqy3fUw=",
   "success": true,
-  "projectFilePath": "C:\\Users\\muham\\source\\repos\\FaceLiveness\\FaceLiveness\\FaceLiveness.csproj",
+  "projectFilePath": "C:\\code\\FaceLivenessDotNet\\FaceLiveness\\FaceLiveness.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\muham\\.nuget\\packages\\aforge\\2.2.5\\aforge.2.2.5.nupkg.sha512",
     "C:\\Users\\muham\\.nuget\\packages\\aforge.video\\2.2.5\\aforge.video.2.2.5.nupkg.sha512",

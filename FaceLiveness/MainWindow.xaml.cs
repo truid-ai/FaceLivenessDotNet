@@ -170,28 +170,74 @@ namespace FaceLiveness
 
         public class Response
         {
+            [JsonProperty("status")]
             public int Status { get; set; }
-            public string icaoStatus { get; set; }
+
+            [JsonProperty("icaoStatus")]
+            public string IcaoStatus { get; set; }
+
+            [JsonProperty("result")]
             public Result Result { get; set; }
-            public FaceQualityChecks FaceQualityChecks { get; set; }
+
+            [JsonProperty("faceQualityChecks")]
+            public FaceLivenessMetrics FaceQualityChecks { get; set; }
+
+            [JsonProperty("incompatibleCamera")]
+            public bool IncompatibleCamera { get; set; } = false; // Default value
         }
 
         public class Result
         {
-            public string Status { get; set; }
+            [JsonProperty("status")]
+            public string Status { get; set; } // Values: "done" or "error"
+
+            [JsonProperty("confidence")]
             public double Confidence { get; set; }
         }
 
-        public class FaceQualityChecks
+        public class FaceLivenessMetrics
         {
-            public string Face_Detected { get; set; }
-            public string Face_Exposure { get; set; }
-            public string Bg_Glare { get; set; }
-            public string Covered_Face { get; set; }
-            public string Sun_Glasses { get; set; }
-            public string Expression { get; set; }
-            public string Eyes_Closed { get; set; }
-            public string Pupil { get; set; }
+            [JsonProperty("backgroundUniformity")]
+            public string BackgroundUniformity { get; set; }
+
+            [JsonProperty("shadowSymmetry")]
+            public string ShadowSymmetry { get; set; }
+
+            [JsonProperty("appropriateLighting")]
+            public string AppropriateLighting { get; set; }
+
+            [JsonProperty("appropriateExposure")]
+            public string AppropriateExposure { get; set; }
+
+            [JsonProperty("colorNaturalness")]
+            public string ColorNaturalness { get; set; }
+
+            [JsonProperty("expressionNeutrality")]
+            public string ExpressionNeutrality { get; set; }
+
+            [JsonProperty("foreignObjectsAbsence")]
+            public string ForeignObjectsAbsence { get; set; }
+
+            [JsonProperty("lookingStraight")]
+            public string LookingStraight { get; set; }
+
+            [JsonProperty("faceAlignment")]
+            public string FaceAlignment { get; set; }
+
+            [JsonProperty("openEyes")]
+            public string OpenEyes { get; set; }
+
+            [JsonProperty("eyeVisibility")]
+            public string EyeVisibility { get; set; }
+
+            [JsonProperty("faceFeaturesVisibility")]
+            public string FaceFeaturesVisibility { get; set; }
+
+            [JsonProperty("glasses")]
+            public string Glasses { get; set; }
+
+            [JsonProperty("sunGlasses")]
+            public string SunGlasses { get; set; }
         }
 
         public async Task<Response> SendImageToServerWithRestSharpAsync(Mat image, string url)
@@ -362,7 +408,7 @@ namespace FaceLiveness
 
                             Console.WriteLine("Uploading image");
                             Response response = await SendImageToServerWithRestSharpAsync(image, "https://face-api.truid.ai/check-face-liveness");
-
+                            
                             //Cv2.ImShow("Hello", image);
                             //Cv2.WaitKey(1000);
                             //Cv2.DestroyAllWindows();
@@ -386,30 +432,54 @@ namespace FaceLiveness
                                 return;
                             }
 
-                            Console.WriteLine("Response received: " + response.Status + " " + response.Result.Status);
+                            PrintResponse(response);
 
 
                             // show a dialog box with the response
                             Dispatcher.Invoke(() =>
                             {
-                                if (response.Result.Status == "error" && response.icaoStatus == "error")
+                                livenessLabel.Text = "Liveness: " + (response.Result.Status == "error" ? "fail" : "pass");
+                                icaoLabel.Text = "ICAO Status: " + (response.IcaoStatus == "error" ? "fail" : "pass");
+
+                                if (response.FaceQualityChecks != null)
                                 {
-                                    livenessLabel.Text = "Face liveness check failed";
-                                    instructionPopup.IsOpen = true;
+                                    backgroundUniformity.Text = "  Background Uniformity: " + response.FaceQualityChecks.BackgroundUniformity;
+                                    shadowSymmetry.Text = "  Shadow Symmetry: " + response.FaceQualityChecks.ShadowSymmetry;
+                                    appLighting.Text = "  Appropriate Lighting: " + response.FaceQualityChecks.AppropriateLighting;
+                                    appExposure.Text = "  Appropriate Exposure: " + response.FaceQualityChecks.AppropriateExposure;
+                                    colorN.Text = "  Color Naturalness: " + response.FaceQualityChecks.ColorNaturalness;
+                                    expressionN.Text = "  Expression Neutrality: " + response.FaceQualityChecks.ExpressionNeutrality;
+                                    foreignObjects.Text = "  Foreign Objects Absence: " + response.FaceQualityChecks.ForeignObjectsAbsence;
+                                    lookingStraight.Text = "  Looking Straight: " + response.FaceQualityChecks.LookingStraight;
+                                    faceAlign.Text = "  Face Alignment: " + response.FaceQualityChecks.FaceAlignment;
+                                    eyesOpen.Text = "  Open Eyes: " + response.FaceQualityChecks.OpenEyes;
+                                    eyeVis.Text = "  Eye Visibility: " + response.FaceQualityChecks.EyeVisibility;
+                                    faceFeatVis.Text = "  Face Features Visibility: " + response.FaceQualityChecks.FaceFeaturesVisibility;
+                                    glasses.Text = "  Glasses: " + response.FaceQualityChecks.Glasses;
+                                    sunGlasses.Text = "  Sun Glasses: " + response.FaceQualityChecks.SunGlasses;
                                 }
-                                else if (response.icaoStatus == "error")
-                                {
-                                    livenessLabel.Text = "Face liveness check passed";
-                                    instructionPopup.IsOpen = true;
-                                }
-                                else if (response.Result.Status == "error")
-                                {
-                                    MessageBox.Show($"ICAO passed. Face liveness check failed.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                                }
-                                else
-                                {
-                                    MessageBox.Show($"Face liveness check successful.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
-                                }
+
+                                instructionPopup.IsOpen = true;
+
+
+                                //if (response.Result.Status == "error" && response.IcaoStatus == "error")
+                                //{
+                                //    livenessLabel.Text = "Face liveness check failed";
+                                //    instructionPopup.IsOpen = true;
+                                //}
+                                //else if (response.IcaoStatus == "error")
+                                //{
+                                //    livenessLabel.Text = "Face liveness check passed";
+                                //    instructionPopup.IsOpen = true;
+                                //}
+                                //else if (response.Result.Status == "error")
+                                //{
+                                //    MessageBox.Show($"ICAO passed. Face liveness check failed.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                                //}
+                                //else
+                                //{
+                                //    MessageBox.Show($"Face liveness check successful.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                                //}
                             });
 
                         });
@@ -438,6 +508,42 @@ namespace FaceLiveness
             {
                 MessageBox.Show("Error on _videoSource_NewFrame:\n" + exc.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 StopCamera();
+            }
+        }
+
+        private void PrintResponse(Response response)
+        {
+            if (response != null)
+            {
+                Console.WriteLine("Status: " + response.Status);
+                Console.WriteLine("ICAO Status: " + response.IcaoStatus);
+                Console.WriteLine("Incompatible Camera: " + response.IncompatibleCamera);
+                Console.WriteLine("\nResult:");
+                Console.WriteLine("  Status: " + response.Result?.Status);
+                Console.WriteLine("  Confidence: " + response.Result?.Confidence);
+
+                Console.WriteLine("\nFace Quality Checks:");
+                if (response.FaceQualityChecks != null)
+                {
+                    Console.WriteLine("  Background Uniformity: " + response.FaceQualityChecks.BackgroundUniformity);
+                    Console.WriteLine("  Shadow Symmetry: " + response.FaceQualityChecks.ShadowSymmetry);
+                    Console.WriteLine("  Appropriate Lighting: " + response.FaceQualityChecks.AppropriateLighting);
+                    Console.WriteLine("  Appropriate Exposure: " + response.FaceQualityChecks.AppropriateExposure);
+                    Console.WriteLine("  Color Naturalness: " + response.FaceQualityChecks.ColorNaturalness);
+                    Console.WriteLine("  Expression Neutrality: " + response.FaceQualityChecks.ExpressionNeutrality);
+                    Console.WriteLine("  Foreign Objects Absence: " + response.FaceQualityChecks.ForeignObjectsAbsence);
+                    Console.WriteLine("  Looking Straight: " + response.FaceQualityChecks.LookingStraight);
+                    Console.WriteLine("  Face Alignment: " + response.FaceQualityChecks.FaceAlignment);
+                    Console.WriteLine("  Open Eyes: " + response.FaceQualityChecks.OpenEyes);
+                    Console.WriteLine("  Eye Visibility: " + response.FaceQualityChecks.EyeVisibility);
+                    Console.WriteLine("  Face Features Visibility: " + response.FaceQualityChecks.FaceFeaturesVisibility);
+                    Console.WriteLine("  Glasses: " + response.FaceQualityChecks.Glasses);
+                    Console.WriteLine("  Sun Glasses: " + response.FaceQualityChecks.SunGlasses);
+                }
+            }
+            else
+            {
+                Console.WriteLine("Failed to receive a valid response.");
             }
         }
 
